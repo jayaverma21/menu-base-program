@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin-top: 50px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .output {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>QR Code Generator</h1>
+        <form id="qr-form">
+            <label for="url-input">Enter URL:</label><br>
+            <input type="text" id="url-input" name="url" placeholder="Enter URL">
+            <button type="submit">Generate QR Code</button>
+        </form>
+        <div class="output" id="qr-output"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const qrForm = document.getElementById('qr-form');
+            const qrOutput = document.getElementById('qr-output');
+
+            qrForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(qrForm);
+
+                fetch('/cgi-bin/generate_qr.py', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    qrOutput.innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    qrOutput.textContent = 'Error generating QR code.';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
