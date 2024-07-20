@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #9ff0e1, #6198da);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            transition: transform 0.3s;
+            z-index: 10;
+        }
+
+        .container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #34495e;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background: #3498db;
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        #result {
+            margin-top: 1.5rem;
+            color: #2c3e50;
+            font-size: 1rem;
+            text-align: left;
+            white-space: pre-wrap;
+        }
+
+        .loading {
+            font-size: 1.2rem;
+            color: #2980b9;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        /* Cloud animation styles */
+        .cloud {
+            position: absolute;
+            fill: #ffffff;
+            opacity: 0.8;
+        }
+
+        .cloud.x1 {
+            width: 90px;
+            top: 50px;
+            left: -100px;
+            animation: moveClouds 30s linear infinite;
+        }
+
+        .cloud.x2 {
+            width: 81px;
+            top: 150px;
+            left: -90px;
+            animation: moveClouds 35s linear infinite;
+        }
+
+        .cloud.x3 {
+            width: 99px;
+            top: 250px;
+            left: -110px;
+            animation: moveClouds 40s linear infinite;
+        }
+
+        .cloud.x4 {
+            width: 72px;
+            top: 350px;
+            left: -80px;
+            animation: moveClouds 33s linear infinite;
+        }
+
+        .cloud.x5 {
+            width: 108px;
+            top: 450px;
+            left: -120px;
+            animation: moveClouds 45s linear infinite;
+        }
+
+        @keyframes moveClouds {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(110vw);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- SVG Clouds -->
+    <svg class="cloud x1" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M48,22c0,0,0-0.1,0-0.1c0-4.4-3.6-8-8-8c-0.9,0-1.8,0.2-2.6,0.4C36.6,10.9,34,8,30.5,8c-3.3,0-6.1,2.1-7.3,5.1
+        C22.4,13,21.7,13,21,13c-3.3,0-6,2.7-6,6c0,0.1,0,0.2,0,0.3C9.2,20.4,6,24.4,6,29c0,5.5,4.5,10,10,10h32c4.4,0,8-3.6,8-8
+        C56,25.6,52.4,22.1,48,22z"/>
+    </svg>
+    <svg class="cloud x2" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M48,22c0,0,0-0.1,0-0.1c0-4.4-3.6-8-8-8c-0.9,0-1.8,0.2-2.6,0.4C36.6,10.9,34,8,30.5,8c-3.3,0-6.1,2.1-7.3,5.1
+        C22.4,13,21.7,13,21,13c-3.3,0-6,2.7-6,6c0,0.1,0,0.2,0,0.3C9.2,20.4,6,24.4,6,29c0,5.5,4.5,10,10,10h32c4.4,0,8-3.6,8-8
+        C56,25.6,52.4,22.1,48,22z"/>
+    </svg>
+    <svg class="cloud x3" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M48,22c0,0,0-0.1,0-0.1c0-4.4-3.6-8-8-8c-0.9,0-1.8,0.2-2.6,0.4C36.6,10.9,34,8,30.5,8c-3.3,0-6.1,2.1-7.3,5.1
+        C22.4,13,21.7,13,21,13c-3.3,0-6,2.7-6,6c0,0.1,0,0.2,0,0.3C9.2,20.4,6,24.4,6,29c0,5.5,4.5,10,10,10h32c4.4,0,8-3.6,8-8
+        C56,25.6,52.4,22.1,48,22z"/>
+    </svg>
+    <svg class="cloud x4" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M48,22c0,0,0-0.1,0-0.1c0-4.4-3.6-8-8-8c-0.9,0-1.8,0.2-2.6,0.4C36.6,10.9,34,8,30.5,8c-3.3,0-6.1,2.1-7.3,5.1
+        C22.4,13,21.7,13,21,13c-3.3,0-6,2.7-6,6c0,0.1,0,0.2,0,0.3C9.2,20.4,6,24.4,6,29c0,5.5,4.5,10,10,10h32c4.4,0,8-3.6,8-8
+        C56,25.6,52.4,22.1,48,22z"/>
+    </svg>
+    <svg class="cloud x5" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M48,22c0,0,0-0.1,0-0.1c0-4.4-3.6-8-8-8c-0.9,0-1.8,0.2-2.6,0.4C36.6,10.9,34,8,30.5,8c-3.3,0-6.1,2.1-7.3,5.1
+        C22.4,13,21.7,13,21,13c-3.3,0-6,2.7-6,6c0,0.1,0,0.2,0,0.3C9.2,20.4,6,24.4,6,29c0,5.5,4.5,10,10,10h32c4.4,0,8-3.6,8-8
+        C56,25.6,52.4,22.1,48,22z"/>
+    </svg>
+
+    <div class="container">
+        <h1>Weather Forecast</h1>
+        <form id="weatherForm" aria-labelledby="formDescription">
+            <label for="city">Enter city:</label>
+            <input type="text" id="city" name="city" required aria-required="true" aria-label="Enter city name">
+            <button type="submit" class="btn">Get Weather</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('weatherForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var city = document.getElementById('city').value;
+            var resultDiv = document.getElementById('result');
+            var button = event.target.querySelector('button');
+
+            resultDiv.innerHTML = '<span class="loading">Loading...</span>';
+            button.disabled = true;
+
+            fetch('/cgi-bin/weather.py?city=' + encodeURIComponent(city))
+                .then(response => response.json())
+                .then(data => {
+                    button.disabled = false;
+                    if (data.error) {
+                        resultDiv.innerHTML = '<span class="error">' + data.error + '</span>';
+                    } else {
+                        var resultText = `
+                        <strong>City:</strong> ${data.name}
+                        <br>
+                        <strong>Temperature:</strong> ${data.main.temp} °C
+                        <br>
+                        <strong>Humidity:</strong> ${data.main.humidity} %
+                        <br>
+                        <strong>Weather:</strong> ${data.weather[0].description}
+                        <br>
+                        <strong>Wind Speed:</strong> ${data.wind.speed} m/s
+                        `;
+                        resultDiv.innerHTML = resultText;
+                    }
+                })
+                .catch(error => {
+                    button.disabled = false;
+                    resultDiv.innerHTML = '<span class="error">An error occurred. Please try again.</span>';
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>
