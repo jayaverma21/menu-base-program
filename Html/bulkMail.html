@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Bulk Email</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .email-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            position: relative; /* For positioning success message */
+        }
+        .email-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .email-header h1 {
+            color: #333;
+            font-size: 24px;
+            margin: 0;
+        }
+        .email-icon {
+            font-size: 24px;
+            color: #3b5998;
+            margin-right: 10px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+        input[type="text"], textarea {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            width: 100%;
+        }
+        textarea {
+            resize: vertical;
+            height: 150px;
+        }
+        input[type="submit"] {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #3b5998;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            align-self: flex-end;
+            width: 150px;
+            text-align: center;
+        }
+        input[type="submit"]:hover {
+            background-color: #2d4373;
+        }
+        .success-message {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 255, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+            z-index: 10;
+        }
+        .success-message.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .success-text {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>Compose Email</h1>
+            <i class="far fa-envelope email-icon"></i> <!-- Updated email icon -->
+        </div>
+        <form id="emailForm">
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject" required>
+
+            <label for="body">Body:</label>
+            <textarea id="body" name="body" required></textarea>
+
+            <label for="recipients">Recipients (comma-separated):</label>
+            <input type="text" id="recipients" name="recipients" required>
+
+            <input type="submit" value="Send Email">
+        </form>
+        <div class="success-message" id="successMessage">
+            <div class="success-text">Email sent successfully!</div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+
+            const formData = new FormData(this);
+
+            fetch('/cgi-bin/bulkMail.py', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.results) {
+                    const results = data.results;
+                    results.forEach(result => {
+                        if (result.status === "success") {
+                            showSuccessMessage();
+                        } else {
+                            alert(`Failed to send email to ${result.recipient}. Error: ${result.error}`);
+                        }
+                    });
+                } else {
+                    alert('Failed to send emails: Unknown error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while sending emails.');
+            });
+        });
+
+        function showSuccessMessage() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.classList.add('show');
+
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 3000); // Remove success message after 3 seconds
+        }
+    </script>
+</body>
+</html>
