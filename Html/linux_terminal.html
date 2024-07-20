@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Web Terminal</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #2d2d2d;
+            color: #00ff00;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #00ff00;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #command {
+            width: 90%;
+            height: 25px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #000;
+            color: #00ff00;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        #btn {
+            background-color: #555;
+            color: #fff;
+            border: none;
+            height: 30px;
+            border-radius: 5px;
+            width: 70px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        #btn:hover {
+            background-color: #333;
+            transform: scale(1.1);
+        }
+
+        #output {
+            background-color: #000;
+            color: #00ff00;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            min-height: 150px;
+        }
+
+        .prompt {
+            color: #00ff00;
+        }
+    </style>
+    <script>
+        function executeCommand() {
+            let command = document.getElementById('command').value;
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', `/cgi-bin/linux.py?command=${encodeURIComponent(command)}`, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);
+                    document.getElementById('output').innerText = response.stdout + response.stderr;
+                }
+            };
+            xhr.send();
+        }
+    </script>
+</head>
+
+<body>
+    <div id="container">
+        <h1>Linux Terminal</h1>
+        <div>
+            <span class="prompt">[root@ip-172-31-44-242 ec2-user]#</span>
+            <input type="text" id="command" placeholder="Enter command">
+            <button id="btn" onclick="executeCommand()">Run</button>
+        </div>
+        <pre id="output"></pre>
+    </div>
+</body>
+
+</html>
