@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS EC2 Instance Creation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="submit"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #5cb85c;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #e9ecef;
+            color: #333;
+            font-size: 14px;
+        }
+    </style>
+    <script>
+        function createInstance() {
+            var form = document.getElementById('awsForm');
+            var formData = new FormData(form);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/cgi-bin/ec2_launch.py", true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    document.getElementById('result').innerHTML = xhr.responseText;
+                } else {
+                    document.getElementById('result').innerHTML = "Error: " + xhr.status;
+                }
+            };
+            xhr.send(formData);
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Create AWS EC2 Instance</h1>
+        <form id="awsForm" onsubmit="event.preventDefault(); createInstance();">
+            <label for="accessKey">AWS Access Key ID:</label>
+            <input type="text" id="accessKey" name="accessKey" required>
+
+            <label for="secretKey">AWS Secret Access Key:</label>
+            <input type="text" id="secretKey" name="secretKey" required>
+
+            <label for="region">AWS Region:</label>
+            <input type="text" id="region" name="region"  required>
+
+            <label for="instanceType">Instance Type:</label>
+            <input type="text" id="instanceType" name="instanceType"  required>
+
+            <label for="imageId">Image ID:</label>
+            <input type="text" id="imageId" name="imageId"  required>
+
+            <input type="submit" value="Create Instance">
+        </form>
+        <div id="result"></div>
+    </div>
+</body>
+</html>
