@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Regression Model Maker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="file"],
+        input[type="button"] {
+            display: block;
+            margin: 10px 0;
+        }
+        .dataframe {
+            margin: 20px 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .dataframe th, .dataframe td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .dataframe th {
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+        .dataframe td {
+            text-align: center;
+        }
+        .chart-container {
+            width: 80%;
+            margin: 20px auto;
+            text-align: center;
+        }
+        canvas {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Linear Regression Model Maker</h1>
+        <form id="upload-form">
+            <label for="data-file">Upload your data file. (Please upload a CSV file.)</label>
+            <input type="file" id="data-file" accept=".csv">
+            <input type="button" value="Upload" onclick="uploadFile()">
+        </form>
+        <div id="data-info">
+            <!-- Data information will be displayed here -->
+        </div>
+        <div id="data-description">
+            <!-- Data description will be displayed here -->
+        </div>
+        <div id="features-selection">
+            <!-- Features selection will be displayed here -->
+        </div>
+        <div id="target-selection">
+            <!-- Target variable selection will be displayed here -->
+        </div>
+        <div id="encoding-selection">
+            <!-- Encoding selection will be displayed here -->
+        </div>
+        <div id="train-test-split">
+            <!-- Train-test split selection will be displayed here -->
+        </div>
+        <div class="chart-container">
+            <canvas id="regression-chart"></canvas>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function uploadFile() {
+            const input = document.getElementById('data-file');
+            if (input.files.length === 0) {
+                alert("Please upload a CSV file.");
+                return;
+            }
+
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const data = event.target.result;
+                const rows = data.split('\n').map(row => row.split(','));
+
+                displayDataInfo(rows);
+                displayDataDescription(rows);
+            };
+            reader.readAsText(file);
+        }
+
+        function displayDataInfo(rows) {
+            const infoDiv = document.getElementById('data-info');
+            infoDiv.innerHTML = `<h2>Data Information</h2>`;
+            infoDiv.innerHTML += `<p>Number of rows: ${rows.length}</p>`;
+            infoDiv.innerHTML += `<p>Number of columns: ${rows[0].length}</p>`;
+        }
+
+        function displayDataDescription(rows) {
+            const descriptionDiv = document.getElementById('data-description');
+            descriptionDiv.innerHTML = `<h2>Data Description</h2>`;
+            
+            let table = '<table class="dataframe"><tr>';
+            for (let col of rows[0]) {
+                table += `<th>${col}</th>`;
+            }
+            table += '</tr>';
+
+            for (let i = 1; i < rows.length; i++) {
+                table += '<tr>';
+                for (let cell of rows[i]) {
+                    table += `<td>${cell}</td>`;
+                }
+                table += '</tr>';
+            }
+            table += '</table>';
+            descriptionDiv.innerHTML = table;
+        }
+    </script>
+</body>
+</html>
